@@ -1,6 +1,9 @@
 package co.uk.kenyoncomputing.mixfix.controllers;
 
+import co.uk.kenyoncomputing.mixfix.entities.SpotifyTokens;
+import co.uk.kenyoncomputing.mixfix.repositories.SpotifyTokensRepository;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
@@ -11,9 +14,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @RestController
 public class AuthController {
+
+    @Autowired
+    SpotifyTokensRepository spotifyTokensRepository;
 
     @GetMapping("spotifyLogin")
     public ModelAndView spotifyLogin(ModelMap modelMap, HttpServletResponse response) {
@@ -57,7 +64,9 @@ public class AuthController {
 
             HttpEntity<MultiValueMap<String, String>> postRequest = new HttpEntity<>(map, headers);
 
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, postRequest, String.class);
+            ResponseEntity<SpotifyTokens> response = restTemplate.exchange(url, HttpMethod.POST, postRequest, SpotifyTokens.class);
+
+            spotifyTokensRepository.save(Objects.requireNonNull(response.getBody()));
 
             return new ModelAndView("redirect:authSuccess");
         }
