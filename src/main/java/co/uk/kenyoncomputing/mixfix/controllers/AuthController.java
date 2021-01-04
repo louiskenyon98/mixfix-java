@@ -19,8 +19,12 @@ import java.util.Objects;
 @RestController
 public class AuthController {
 
+    private final SpotifyTokensRepository spotifyTokensRepository;
+
     @Autowired
-    SpotifyTokensRepository spotifyTokensRepository;
+    public AuthController(SpotifyTokensRepository spotifyTokensRepository) {
+        this.spotifyTokensRepository = spotifyTokensRepository;
+    }
 
     @GetMapping("spotifyLogin")
     public ModelAndView spotifyLogin(ModelMap modelMap, HttpServletResponse response) {
@@ -46,8 +50,6 @@ public class AuthController {
             modelMap.addAttribute("error", "state_mismatch");
             return new ModelAndView("redirect:jimbo", modelMap);
         } else {
-            System.out.println("authCode: " + authCode);
-
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
