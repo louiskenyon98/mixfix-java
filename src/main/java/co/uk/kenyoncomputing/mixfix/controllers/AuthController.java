@@ -1,6 +1,7 @@
 package co.uk.kenyoncomputing.mixfix.controllers;
 
 import co.uk.kenyoncomputing.mixfix.entities.SpotifyTokens;
+import co.uk.kenyoncomputing.mixfix.enums.Spotify;
 import co.uk.kenyoncomputing.mixfix.repositories.SpotifyTokensRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,9 @@ public class AuthController {
         Cookie stateCookie = new Cookie(stateKey, state);
 
         response.addCookie(stateCookie);
-        modelMap.addAttribute("response_type", "code");
-        modelMap.addAttribute("client_id", "9f8e38fa4a4b4121a8108c36674f4a67");
-        modelMap.addAttribute("scope", "user-read-private user-read-email");
+        modelMap.addAttribute("response_type", Spotify.RESPONSE_TYPE.value());
+        modelMap.addAttribute("client_id", Spotify.CLIENT_ID.value());
+        modelMap.addAttribute("scope", Spotify.SCOPE.value());
         modelMap.addAttribute("redirect_uri", "http://localhost:8080/callback");
         modelMap.addAttribute("state", state);
         return new ModelAndView("redirect:https://accounts.spotify.com/authorize?", modelMap);
