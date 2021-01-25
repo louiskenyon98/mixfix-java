@@ -1,5 +1,6 @@
 package co.uk.kenyoncomputing.mixfix.controllers;
 
+import co.uk.kenyoncomputing.mixfix.entities.AuthorizationCall;
 import co.uk.kenyoncomputing.mixfix.entities.SpotifyTokens;
 import co.uk.kenyoncomputing.mixfix.enums.Spotify;
 import co.uk.kenyoncomputing.mixfix.repositories.SpotifyTokensRepository;
@@ -28,7 +29,7 @@ public class AuthController {
     }
 
     @GetMapping("spotifyLogin")
-    public ModelAndView spotifyLogin(ModelMap modelMap, HttpServletResponse response) {
+    public AuthorizationCall spotifyLogin(ModelMap modelMap, HttpServletResponse response) {
         String state = RandomStringUtils.randomAlphabetic(16);
         String stateKey = "spotify_auth_state";
 
@@ -40,7 +41,10 @@ public class AuthController {
         modelMap.addAttribute("scope", Spotify.SCOPE.value());
         modelMap.addAttribute("redirect_uri", "http://localhost:8080/callback");
         modelMap.addAttribute("state", state);
-        return new ModelAndView("redirect:https://accounts.spotify.com/authorize?", modelMap);
+
+        return new AuthorizationCall(Spotify.RESPONSE_TYPE.value(), Spotify.CLIENT_ID.value(), Spotify.SCOPE.value(), "http://localhost:8080/callback", state);
+
+//        return new ModelAndView("redirect:https://accounts.spotify.com/authorize?", modelMap);
     }
 
     //use HttpServletRequest request to inspect the incoming request
